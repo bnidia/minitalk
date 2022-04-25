@@ -12,23 +12,16 @@
 
 #include "minitalk.h"
 
-void	handler(int signum, siginfo_t *sig, void *context);
+static void	handler(int signum, siginfo_t *sig, void *context);
 
-static volatile sig_atomic_t g_response[2] = {};
+static volatile sig_atomic_t	g_response[2] = {};
 
-int	main(void) // server side
+int	main(void)
 {
 	struct sigaction	act;
 
-// sa_flags Определяет различные флаги, которые могут
-// воздействовать на поведение сигнала
-// SA_SIGINFO Invoke signal-catching function with
-// three arguments instead of one.
 	act.sa_flags = SA_SIGINFO;
-// привязывание функции обработчика сигнала
 	act.sa_sigaction = &handler;
-// sa_mask определяет набор сигналов, которые будут
-// блокированы, в то время как обработчик выполняется
 	sigemptyset(&act.sa_mask);
 	sigaddset(&act.sa_mask, SIGUSR1);
 	sigaddset(&act.sa_mask, SIGUSR2);
@@ -42,17 +35,17 @@ int	main(void) // server side
 	ft_printf("PID is: %i\n", getpid());
 	while (42)
 	{
-		while (g_response[0] != 1);
+		while (g_response[0] != 1)
+			;
 		g_response[0] = 0;
-		// посылка сигнала о готовности принять следующий сигнал
 		kill(g_response[1], SIGUSR1);
 	}
 }
 
-void string_assembly(unsigned char c)
+static void	string_assembly(unsigned char c)
 {
-	static unsigned char str[4096];
-	static int str_i;
+	static unsigned char	str[4096];
+	static int				str_i;
 
 	str[str_i++] = c;
 	if (str_i == 4096)
@@ -68,25 +61,21 @@ void string_assembly(unsigned char c)
 	}
 }
 
-void	handler(int signum, siginfo_t *sig, void *context)
+static void	handler(int signum, siginfo_t *sig, void *context)
 {
-// значения static переменных зануляются по умолчанию
 	static unsigned char	letter;
 	static int				i;
 
 	(void)context;
-// Установка n-ого бита
-	if ((SIGUSR1^signum) == 0)
+	if ((SIGUSR1 ^ signum) == 0)
 		letter |= (1 << i);
 	i++;
-	if ((8^i) == 0)
+	if ((8 ^ i) == 0)
 	{
 		string_assembly(letter);
 		letter = 0;
 		i = 0;
 	}
-	// окончание обработки полученного сигнала
-	// установка флага о готовности обработать следующий пакет
 	g_response[0] = 1;
 	g_response[1] = sig->si_pid;
 }
