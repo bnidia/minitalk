@@ -11,10 +11,13 @@ This project is dedicated to signal transmission in the operating system. We wer
 
 ### How to build and run
 Download to your computer, go to the directory minitalk, compile with make and then run client and server.
-client needs pid of server, and then text. 
+client needs pid of server, and then text. Example you can see below.
 ```
 git clone https://github.com/bnidia/minitalk.git
 cd minitalk
 make
-./fdf ./maps/mars.fdf
+./server
+server> PID is: 912354
+./client 912354 "Hello world"
+server>Hello world
 ```
