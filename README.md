@@ -11,7 +11,7 @@ This project is dedicated to signal transmission in the operating system. We wer
 
 ### How to build and run
 Download to your computer, go to the directory minitalk, compile with make and then run client and server.
-client needs pid of server, and then text. Example you can see below.
+client needs pid of server, and then text. In files test1.txt and test2.txt you can find sample texts to transfer. Example you can see below.
 ```
 git clone https://github.com/bnidia/minitalk.git
 cd minitalk
